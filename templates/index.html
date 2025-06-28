@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRTSNSL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose@0.0.7/dist/handpose.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@3.11.0/dist/tf-backend-webgl.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@3.11.0/dist/tf-converter.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤚 GRTSNSL</h1>
+            <p>Train custom gestures and use them in real-time video calls</p>
+        </header>
+
+        <div class="mode-selector">
+            <button id="trainingMode" class="mode-btn active">Training Mode</button>
+            <button id="recognitionMode" class="mode-btn">Recognition Mode</button>
+            <button id="videoCallMode" class="mode-btn">Video Call</button>
+        </div>
+
+        <!-- Training Mode -->
+        <div id="trainingSection" class="section active">
+            <div class="training-controls">
+                <div class="input-group">
+                    <input type="text" id="gestureName" placeholder="Enter gesture name (e.g., 'Hello', 'Thumbs Up')" />
+                    <button id="startTraining" class="btn primary">Start Training</button>
+                    <button id="stopTraining" class="btn secondary" disabled>Stop Training</button>
+                </div>
+                <div class="training-info">
+                    <span id="sampleCount">Samples: 0</span>
+                    <span id="trainingStatus">Ready to train</span>
+                </div>
+            </div>
+            
+            <div class="video-container">
+                <video id="trainingVideo" autoplay muted></video>
+                <canvas id="trainingCanvas" class="overlay"></canvas>
+                <div class="video-overlay">
+                    <div id="trainingInstructions">Position your hand in the camera view</div>
+                </div>
+            </div>
+
+            <div class="gesture-list">
+                <h3>Trained Gestures</h3>
+                <div id="gestureList"></div>
+            </div>
+        </div>
+
+        <!-- Recognition Mode -->
+        <div id="recognitionSection" class="section">
+            <div class="recognition-controls">
+                <button id="startRecognition" class="btn primary">Start Recognition</button>
+                <button id="stopRecognition" class="btn secondary" disabled>Stop Recognition</button>
+                <div class="audio-controls">
+                    <label>
+                        <input type="checkbox" id="enableAudio" checked>
+                        Enable Audio Feedback
+                    </label>
+                    <button id="testAudio" class="btn secondary" style="margin-left: 10px;">Test Audio</button>
+                </div>
+            </div>
+
+            <div class="video-container">
+                <video id="recognitionVideo" autoplay muted></video>
+                <canvas id="recognitionCanvas" class="overlay"></canvas>
+                <div class="video-overlay">
+                    <div id="recognitionResult">No gesture detected</div>
+                    <div id="audioIndicator" style="display: none; background: rgba(0,255,0,0.8); color: white; padding: 5px 10px; border-radius: 5px; margin-top: 5px; text-align: center;">🔊 Playing Audio...</div>
+                </div>
+            </div>
+
+            <div class="recognition-stats">
+                <div class="stat">
+                    <span class="label">Confidence:</span>
+                    <span id="confidenceScore">0%</span>
+                </div>
+                <div class="stat">
+                    <span class="label">FPS:</span>
+                    <span id="fpsCounter">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Call Mode -->
+        <div id="videoCallSection" class="section">
+            <div class="call-controls">
+                <input type="text" id="roomId" placeholder="Enter room ID" />
+                <button id="joinRoom" class="btn primary">Join Room</button>
+                <button id="leaveRoom" class="btn secondary" disabled>Leave Room</button>
+            </div>
+
+            <div class="video-grid">
+                <div class="video-item local">
+                    <video id="localVideo" autoplay muted></video>
+                    <canvas id="localCanvas" class="overlay"></canvas>
+                    <div class="video-label">You</div>
+                    <div id="localGesture" class="gesture-label"></div>
+                </div>
+                <div class="video-item remote">
+                    <video id="remoteVideo" autoplay></video>
+                    <div class="video-label">Remote User</div>
+                    <div id="remoteGesture" class="gesture-label"></div>
+                </div>
+            </div>
+
+            <div class="call-info">
+                <div id="roomStatus">Not connected</div>
+                <div id="participantCount">Participants: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Loading models...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 

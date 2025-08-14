@@ -1,5 +1,4 @@
-# Hand Gesture Recognizer - Python Version
-
+# Hand Gesture Recognizer 
 A real-time web application that allows users to train custom hand gesture recognizers and use them in video calls with live translation to text and audio. This is the Python Flask version of the original Node.js application.
 
 ## Features
@@ -236,4 +235,5 @@ The application runs in debug mode by default. For production deployment:
 1. **Backend**: Add new routes in `app.py`
 2. **Frontend**: Modify `static/js/app.js` for new functionality
 3. **Styling**: Update `static/css/styles.css` for UI changes
+
 
